@@ -8,7 +8,6 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 
 import * as path from 'path';
 import * as fs from 'fs';
-import { pipeline } from 'stream/promises';
 
 @Injectable()
 export class MoviesService {
@@ -17,7 +16,15 @@ export class MoviesService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async search(text: string) {
+  async getAll(): Promise<IResponse> {
+    this.responseService.start();
+
+    const movies: Movie[] = await this.prismaService.movie.findMany();
+
+    return this.responseService.success(movies);
+  }
+
+  async search(text: string): Promise<IResponse> {
     this.responseService.start();
 
     const movies: Movie[] = await this.prismaService.movie.findMany({
@@ -27,7 +34,7 @@ export class MoviesService {
     return this.responseService.success(movies);
   }
 
-  async create(dto: CreateMovieDto) {
+  async create(dto: CreateMovieDto): Promise<IResponse> {
     this.responseService.start();
     const {
       title,

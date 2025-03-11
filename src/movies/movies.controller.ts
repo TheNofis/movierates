@@ -23,8 +23,8 @@ export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
 
   @Get()
-  getAll() {
-    // return this.movieService.getAll();
+  GetAll() {
+    return this.movieService.getAll();
   }
 
   @Get(':id')
