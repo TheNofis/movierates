@@ -45,7 +45,7 @@ export class AuthService {
 
     session.user = user;
 
-    return this.responseService.success();
+    return this.responseService.success(session.user);
   }
 
   async register(dto: RegisterAuthDto, session: ISession): Promise<IResponse> {

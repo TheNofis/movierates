@@ -12,10 +12,15 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  user
+}
 model User {
   id                 String   @id @default(cuid())
 
   username           String   @unique
+  role               Role     @default(user)
   password           String
   profileImage       String?
 

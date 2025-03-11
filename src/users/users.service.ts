@@ -16,14 +16,14 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
   ) {}
-  async profile(id: string): Promise<IResponse> {
+  async profile(username: string): Promise<IResponse> {
     this.responseService.start();
 
     const user: Nullable<User> = await this.redisService.getCachedData(
-      `user:${id}`,
+      `user:${username}`,
       async () => {
         return await this.prismaService.user.findUnique({
-          where: { id },
+          where: { username },
           include: {
             watchedMovies: true,
             comments: true,

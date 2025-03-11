@@ -13,12 +13,12 @@ export class UsersController {
   @Get()
   @Roles('user')
   profile(@Session() session: ISession) {
-    return this.userService.profile(session.user.id);
+    return this.userService.profile(session.user.username);
   }
 
   @Get(':id')
   @Roles('user')
-  profileById(@Param('id') id: string) {
-    return this.userService.profile(id);
+  profileById(@Param('username') username: string) {
+    return this.userService.profile(username);
   }
 }
