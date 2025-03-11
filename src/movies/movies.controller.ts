@@ -14,6 +14,7 @@ import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 
 import { FastifyRequest } from 'fastify';
+import { FileType } from 'src/common/enums/filetype.enums';
 
 @Controller('movies')
 export class MoviesController {
@@ -41,11 +42,7 @@ export class MoviesController {
     if (!data) return { error: 'No file uploaded' };
 
     // Проверяем тип файла
-    if (
-      !['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(
-        data.mimetype,
-      )
-    )
+    if (!FileType.IMAGE.includes(data.mimetype))
       return { error: 'Invalid file type' };
 
     // Передаем все данные в сервис
