@@ -39,12 +39,12 @@ model Movie {
   releaseYear    Int
   director       String
   duration       String
+  posterUrl      String
   genres         String[]
 
   averageRating  Float    @default(0.0)
 
   comments       Comment[]
-
   watchedBy      WatchedMovie[]
 }
 

@@ -1,14 +1,14 @@
 import { Controller, Get, Session, UseGuards, Param } from '@nestjs/common';
 
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { ISession } from 'src/common/interfaces/session.interface';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@Controller('user')
+@Controller('users')
 @UseGuards(RolesGuard)
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UsersController {
+  constructor(private readonly userService: UsersService) {}
 
   @Get()
   @Roles('user')

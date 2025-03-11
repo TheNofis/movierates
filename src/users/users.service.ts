@@ -10,7 +10,7 @@ import { PrismaService } from 'src/databases/prisma/prisma.service';
 import { RedisService } from 'src/databases/redis/redis.service';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     private readonly responseService: ResponseService,
     private readonly prismaService: PrismaService,
