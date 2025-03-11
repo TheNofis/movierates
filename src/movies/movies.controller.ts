@@ -41,14 +41,12 @@ export class MoviesController {
   @Post()
   @Roles(Role.user)
   async create(@Body() dto: CreateMovieDto) {
-    const data = await dto.poster; // Получаем файл
+    const data = await dto.poster;
     if (!data) return { error: 'No file uploaded' };
 
-    // Проверяем тип файла
     if (!FileType.IMAGE.includes(data.mimetype))
       return { error: 'Invalid file type' };
 
-    // Передаем все данные в сервис
     return this.movieService.create(dto);
   }
 

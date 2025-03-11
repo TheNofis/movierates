@@ -6,7 +6,6 @@ import {
   Param,
   Body,
   Put,
-  Req,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -15,8 +14,6 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileType } from 'src/common/enums/filetype.enums';
-
-import { FastifyRequest } from 'fastify';
 
 @Controller('users')
 @UseGuards(RolesGuard)
@@ -32,11 +29,10 @@ export class UsersController {
   @Put()
   @Roles('user')
   async UpdateProfile(@Body() dto: UpdateUserDto) {
-    const data = await dto.profileImage; // Получаем файл
+    const data = await dto.profileImage;
     if (data && !FileType.IMAGE.includes(data.mimetype))
       return { error: 'Invalid file type' };
 
-    // Передаем все данные в сервис
     return this.userService.updateProfile(dto);
   }
 
