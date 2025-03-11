@@ -11,8 +11,8 @@ import { RedisStore } from 'connect-redis';
 
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
-import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
+import fastifyMultipart from '@fastify/multipart';
 
 import * as path from 'path';
 

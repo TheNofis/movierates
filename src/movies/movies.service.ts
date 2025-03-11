@@ -8,6 +8,7 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 
 import * as path from 'path';
 import * as fs from 'fs';
+import { pipeline } from 'stream/promises';
 
 @Injectable()
 export class MoviesService {
@@ -51,49 +52,35 @@ export class MoviesService {
       genres: JSON.parse(dto.genres.value.replace(/'/g, '"')),
     };
 
-    const uploadDir = path.join(__dirname, '../..', 'public', 'movies');
+    try {
+      const uploadDir = path.join(__dirname, '../..', 'public', 'movies');
+      if (!fs.existsSync(uploadDir))
+        fs.mkdirSync(uploadDir, { recursive: true });
 
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      dto.poster.filename = `banner-${title}${path.extname(dto.poster.filename)}`;
 
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-    let fileSize = 0;
-    dto.file.file.on('data', (chunk: Buffer) => (fileSize += chunk.length));
+      const fileBuffer = await dto.poster.toBuffer();
+      if (fileBuffer.length > MAX_FILE_SIZE)
+        throw new Error('File size is too large');
 
-    dto.file.filename = `banner-${title}${path.extname(dto.file.filename)}`;
+      fs.writeFileSync(path.join(uploadDir, dto.poster.filename), fileBuffer);
+    } catch (error) {
+      return this.responseService.error(error.message);
+    }
 
-    return new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(
-        path.join(uploadDir, dto.file.filename),
-      );
+    const movie: Movie = await this.prismaService.movie.create({
+      data: {
+        title: title,
+        releaseYear: +releaseYear,
+        duration: duration,
+        director: director,
+        description: description,
+        genres: genres,
+        posterUrl: `/movies/${dto.poster.filename}`,
+      },
+    });
 
-      dto.file.file.pipe(writeStream);
-
-      writeStream.on('error', () => {
-        reject(this.responseService.error('File upload failed'));
-      });
-      writeStream.on('finish', () => {
-        if (fileSize > MAX_FILE_SIZE) {
-          fs.unlinkSync(path.join(uploadDir, dto.file.filename));
-          reject(this.responseService.error('File size is too large'));
-        }
-        resolve(this.responseService.success(dto.file.filename));
-      });
-    })
-      .then(async () => {
-        const movie: Movie = await this.prismaService.movie.create({
-          data: {
-            title: title,
-            releaseYear: +releaseYear,
-            duration: duration,
-            director: director,
-            description: description,
-            genres: genres,
-            posterUrl: `/movies/${dto.file.filename}`,
-          },
-        });
-
-        return this.responseService.success(movie);
-      })
-      .catch((error: IResponse) => error);
+    return this.responseService.success(movie);
   }
 }

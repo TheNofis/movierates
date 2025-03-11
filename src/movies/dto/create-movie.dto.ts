@@ -1,5 +1,5 @@
 export class CreateMovieDto {
-  file: any;
+  poster: any;
   title: { value: string };
   releaseYear: { value: string };
   duration: { value: string };

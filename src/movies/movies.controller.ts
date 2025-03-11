@@ -14,6 +14,8 @@ import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 
 import { FastifyRequest } from 'fastify';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 import { FileType } from 'src/common/enums/filetype.enums';
 
 @Controller('movies')
@@ -37,8 +39,9 @@ export class MoviesController {
   }
 
   @Post()
+  @Roles(Role.user)
   async create(@Body() dto: CreateMovieDto) {
-    const data = await dto.file; // Получаем файл
+    const data = await dto.poster; // Получаем файл
     if (!data) return { error: 'No file uploaded' };
 
     // Проверяем тип файла
