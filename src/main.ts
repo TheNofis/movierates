@@ -11,6 +11,7 @@ import { RedisStore } from 'connect-redis';
 
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
+import fastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -21,20 +22,26 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix('api/v1');
 
-  await app.register(fastifyCookie);
-
   const redisService = app.get(RedisService);
-
   const redisStore = new RedisStore({
     client: redisService.getClient(),
     ttl: 60 * 5,
   });
 
+  await app.register(fastifyCookie);
   await app.register(fastifySession, {
     secret: 'kdfgnkldfgkndfgkndfgknldfgknldfdfg',
     store: redisStore,
     cookie: { secure: false }, // Установите true в продакшене
     saveUninitialized: false,
+  });
+
+  await app.register(fastifyCookie, {
+    secret: 'kdfgnkldfgkndfgkndfgknldfgknldfdfg',
+  });
+
+  await app.register(fastifyMultipart, {
+    limits: { fileSize: 5 * 1024 * 1024 },
   });
 
   await app.listen(process.env.PORT ?? 3000);
