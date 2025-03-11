@@ -22,7 +22,9 @@ model User {
   averageRating      Float    @default(0.0)
 
   favoriteGenre      String?
+
   watchedMovies      WatchedMovie[]
+  comments           Comment[]
 
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -68,7 +70,8 @@ model Comment {
   movie     Movie  @relation(fields: [movieId], references: [id])
   movieId   String
 
-  user      String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   rating    Int
   text      String
