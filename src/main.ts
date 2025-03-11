@@ -12,6 +12,9 @@ import { RedisStore } from 'connect-redis';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
+
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -36,12 +39,14 @@ async function bootstrap() {
     saveUninitialized: false,
   });
 
-  await app.register(fastifyCookie, {
-    secret: 'kdfgnkldfgkndfgkndfgknldfgknldfdfg',
-  });
-
   await app.register(fastifyMultipart, {
     limits: { fileSize: 5 * 1024 * 1024 },
+    attachFieldsToBody: true,
+  });
+
+  await app.register(fastifyStatic, {
+    root: path.join(__dirname, '..', 'public'),
+    prefix: '/public/',
   });
 
   await app.listen(process.env.PORT ?? 3000);
