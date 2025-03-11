@@ -51,6 +51,7 @@ export class MoviesController {
     // Передаем все данные в сервис
     return this.movieService.create(dto);
   }
+
   @Put(':id')
   update(@Req() request: FastifyRequest, @Body() dto: CreateMovieDto) {
     // return this.movieService.update(dto);
