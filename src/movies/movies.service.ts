@@ -8,6 +8,7 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 
 import * as path from 'path';
 import * as fs from 'fs';
+import { Nullable } from 'src/common/interfaces/nullable.interface';
 
 @Injectable()
 export class MoviesService {
@@ -22,6 +23,18 @@ export class MoviesService {
     const movies: Movie[] = await this.prismaService.movie.findMany();
 
     return this.responseService.success(movies);
+  }
+
+  async getCurrent(id: string): Promise<IResponse> {
+    this.responseService.start();
+
+    const movie: Nullable<Movie> = await this.prismaService.movie.findUnique({
+      where: { id },
+    });
+
+    if (movie === null) return this.responseService.error('Movie not found');
+
+    return this.responseService.success(movie);
   }
 
   async search(text: string): Promise<IResponse> {
@@ -89,5 +102,11 @@ export class MoviesService {
     });
 
     return this.responseService.success(movie);
+  }
+
+  async delete(id: string): Promise<IResponse> {
+    this.responseService.start();
+    await this.prismaService.movie.delete({ where: { id } });
+    return this.responseService.success();
   }
 }

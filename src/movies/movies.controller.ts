@@ -28,8 +28,8 @@ export class MoviesController {
   }
 
   @Get(':id')
-  getCurrent(@Query('id') id: string) {
-    // return this.movieService.search();
+  GetCurrent(@Query('id') id: string) {
+    return this.movieService.getCurrent(id);
   }
 
   @Get('search')
@@ -56,7 +56,7 @@ export class MoviesController {
   }
 
   @Delete(':id')
-  remove(@Body() dto: CreateMovieDto) {
-    // return this.movieService.remove(dto);
+  Delete(@Query('id') id: string) {
+    return this.movieService.delete(id);
   }
 }
