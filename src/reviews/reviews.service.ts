@@ -52,10 +52,11 @@ export class ReviewsService {
   ): Promise<IResponse> {
     this.responseService.start();
 
+    // TODO: user average score, movie average score
     const comment: Comment = await this.prismaService.comment.create({
       data: {
         ...dto,
-        date: new Date(dto.date),
+        date: new Date(),
         watchDate: new Date(dto.watchDate),
         movieId: movieId,
         userId: userId,
@@ -65,11 +66,35 @@ export class ReviewsService {
     return this.responseService.success(comment);
   }
 
-  update(id: string, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  // TODO: user average score, movie average score
+  async update(id: string, dto: UpdateReviewDto): Promise<IResponse> {
+    this.responseService.start();
+
+    const comment: Nullable<Comment> = await this.prismaService.comment.update({
+      where: { id },
+      data: dto,
+    });
+
+    return this.responseService.success(comment);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} review`;
+  // TODO: user average score, movie average score
+  async remove(id: string): Promise<IResponse> {
+    this.responseService.start();
+
+    await this.prismaService.comment.delete({ where: { id } });
+
+    return this.responseService.success();
+  }
+
+  async latest(limit: number): Promise<IResponse> {
+    this.responseService.start();
+
+    const comments: Comment[] = await this.prismaService.comment.findMany({
+      orderBy: { date: 'desc' },
+      take: limit,
+    });
+
+    return this.responseService.success(comments);
   }
 }
