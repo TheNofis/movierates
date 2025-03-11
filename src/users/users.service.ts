@@ -49,17 +49,14 @@ export class UsersService {
 
     const {
       username,
-      profileImage,
       password,
       currentPassword,
     }: {
       username?: string;
-      profileImage?: any;
       password?: string;
       currentPassword?: string;
     } = {
       username: dto.username?.value,
-      profileImage: dto.profileImage,
       password: dto.password?.value,
       currentPassword: dto.currentPassword?.value,
     };
@@ -108,5 +105,22 @@ export class UsersService {
     });
 
     return this.responseService.success(updatedUser);
+  }
+
+  async leaderboard(): Promise<IResponse> {
+    this.responseService.start();
+
+    const users: User[] = await this.prismaService.user.findMany({
+      orderBy: {
+        watchedMovies: {
+          _count: 'desc',
+        },
+      },
+      include: {
+        watchedMovies: true,
+      },
+    });
+
+    return this.responseService.success(users);
   }
 }

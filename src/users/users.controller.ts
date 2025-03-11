@@ -20,7 +20,7 @@ import { FileType } from 'src/common/enums/filetype.enums';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Get()
+  @Get('profile')
   @Roles('user')
   profile(@Session() session: ISession) {
     return this.userService.profile(session.user.username);
@@ -40,5 +40,10 @@ export class UsersController {
   @Roles('user')
   profileById(@Param('username') username: string) {
     return this.userService.profile(username);
+  }
+
+  @Get('leaderboard')
+  leaderboard() {
+    return this.userService.leaderboard();
   }
 }
