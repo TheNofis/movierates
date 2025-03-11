@@ -16,6 +16,7 @@ model User {
   id                 String   @id @default(cuid())
 
   username           String   @unique
+  password           String
   profileImage       String?
 
   totalMoviesWatched Int      @default(0)
