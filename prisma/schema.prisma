@@ -64,24 +64,26 @@ model WatchedMovie {
 
   watchDate DateTime
 
-  rating    Int
-  comment   String?
+  rating    Int    @default(0)
+  comments  Comment[]
 
   @@unique([userId, movieId])
 }
 
 model Comment {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
 
-  movie     Movie  @relation(fields: [movieId], references: [id])
+  movie     Movie   @relation(fields: [movieId], references: [id])
   movieId   String
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
 
-  rating    Int
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id])
+
   text      String
 
-  date      DateTime
-  watchDate DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
