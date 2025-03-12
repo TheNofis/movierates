@@ -64,7 +64,6 @@ model WatchedMovie {
 
   watchDate DateTime
 
-  rating    Int    @default(0)
   comments  Comment[]
 
   @@unique([userId, movieId])
@@ -79,8 +78,10 @@ model Comment {
   userId    String
   user      User    @relation(fields: [userId], references: [id])
 
-  commentId String
-  comment   Comment @relation(fields: [commentId], references: [id])
+  watchedMovieId String
+  watchedMovie WatchedMovie @relation(fields: [watchedMovieId], references: [id])
+
+  rating    Int    @default(0)
 
   text      String
 
